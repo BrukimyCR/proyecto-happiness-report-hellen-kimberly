@@ -7,7 +7,7 @@ Este proyecto tiene como objetivo analizar los niveles de felicidad en diferente
 ## Dataset Seleccionado
 El dataset utilizado es el "World Happiness Report" proveniente de Kaggle (https://www.kaggle.com/datasets/unsdsn/world-happiness), que clasifica países según su nivel de felicidad en una escala de 1 a 10 junto con múltiples variables relacionadas con la economía y bienestar social.
 
-#Justificación del Datset
+## Justificación del Datset
 Reporte Mundial de Felicidad (World Happiness Report)  
 1. Elegimos analizar la felicidad en el mundo porque en cada país intervienen factores muy variados, como las culturas, religiones, climas y sistemas políticos, que pueden influir notablemente en cómo las personas perciben su bienestar. Pensamos que estas diferencias resultan clave para entender por qué los niveles de felicidad cambian entre países y regiones.  
 2. Además, nos interesa examinar cómo las distintas economías impactan la calidad de vida y el entorno social. Queremos descubrir si el nivel de actividad económica realmente guarda una relación directa con la felicidad o si influyen más otros factores, como el apoyo social, la salud o la libertad para tomar decisiones importantes en la vida.  
