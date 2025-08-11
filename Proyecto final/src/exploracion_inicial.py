@@ -29,7 +29,7 @@ def exploracion_basica(df):
     print(df.head())
 
 if __name__ == "__main__":
-    ruta_csv = "data/world-happiness-report.csv"
+    ruta_csv = "Proyecto final/data/world-happiness-report.csv"
     datos = cargar_dataset(ruta_csv)
     if datos is not None:
         exploracion_basica(datos)
