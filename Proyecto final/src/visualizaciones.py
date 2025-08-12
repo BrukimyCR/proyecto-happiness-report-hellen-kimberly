@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -39,7 +40,7 @@ def graficar_histograma(df, columna, titulo, xlabel, ylabel):
     plt.show()
 
 if __name__ == "__main__":
-    ruta_csv = '../data/world-happiness-report.csv'
+    ruta_csv = 'data/world-happiness-report.csv'
     df = pd.read_csv(ruta_csv)
 
     # Gráfico de barras del PIB per cápita
