@@ -1,24 +1,12 @@
 import os
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-def cargar_y_combinar_csv(ruta_carpeta):
-    archivos = ['2015.csv', '2016.csv', '2017.csv', '2018.csv', '2019.csv']
-    lista_df = []
-    for archivo in archivos:
-        ruta = os.path.join(ruta_carpeta, archivo)
-        df = pd.read_csv(ruta)
-        df['Year'] = archivo.split('.')[0]  # Agregar columna de año
-        lista_df.append(df)
-    df_combinado = pd.concat(lista_df, ignore_index=True)
-    return df_combinado
-
 def graficar_barras(df, columna, titulo, xlabel, ylabel):
     plt.figure(figsize=(12,6))
-    # Agrupar por país y hacer promedio para esa columna
-    promedio = df.groupby('Country or region')[columna].mean().sort_values(ascending=False).head(15)
-    plt.bar(promedio.index, promedio.values, color='skyblue')
+    plt.bar(df['Country'], df[columna], color='skyblue')
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.title(titulo)
@@ -37,7 +25,7 @@ def graficar_scatter(df, x_col, y_col, titulo, xlabel, ylabel):
 
 def graficar_heatmap(df):
     plt.figure(figsize=(10,8))
-    correlation = df.select_dtypes(include='number').corr()
+    correlation = df.corr()
     sns.heatmap(correlation, annot=True, cmap='coolwarm', fmt=".2f")
     plt.title('Mapa de calor de correlaciones')
     plt.tight_layout()
@@ -52,29 +40,35 @@ def graficar_histograma(df, columna, titulo, xlabel, ylabel):
     plt.tight_layout()
     plt.show()
 
+def cargar_y_unir_data(data_folder):
+    archivos = ['2015.csv', '2016.csv', '2017.csv', '2018.csv', '2019.csv']
+    dfs = []
+    for archivo in archivos:
+        ruta = os.path.join(data_folder, archivo)
+        df = pd.read_csv(ruta)
+        año = int(archivo.split('.')[0])
+        df['Year'] = año
+        dfs.append(df)
+    df_combinado = pd.concat(dfs, ignore_index=True)
+    return df_combinado
+
 if __name__ == "__main__":
-    ruta_data = 'Proyecto final/data'
-    df = cargar_y_combinar_csv(ruta_data)
+    carpeta_data = 'Proyecto final/data'
+    df = cargar_y_unir_data(carpeta_data)
     print("Datos cargados y combinados. Columnas:", df.columns)
 
-    # Cambia los nombres de las columnas si es necesario, porque pueden variar según el año
-    # Por ejemplo, 'GDP per capita' podría estar como 'GDP per capita' o 'GDP per capita (PPP)'
+    # Agrupar por país y obtener promedio solo columnas numéricas
+    df_promedio = df.groupby('Country').mean(numeric_only=True).reset_index()
 
-    # Revisa los nombres exactos de las columnas con:
-    # print(df.columns)
+    # Top 15 países por PIB
+    df_top15 = df_promedio.sort_values(by='Economy (GDP per Capita)', ascending=False).head(15)
+    graficar_barras(df_top15, 'Economy (GDP per Capita)', 'Promedio PIB per cápita (2015-2019) - Top 15 países', 'País', 'PIB per cápita')
 
-    # Gráfico barras PIB per cápita promedio (ajusta nombre columna si da error)
-    graficar_barras(df, 'GDP per capita', 'Promedio PIB per cápita (2015-2019) - Top 15 países', 'País', 'PIB per cápita')
+    # Top 15 países por soporte social
+    df_top15_soporte = df_promedio.sort_values(by='Social support', ascending=False).head(15)
+    graficar_barras(df_top15_soporte, 'Social support', 'Promedio Soporte Social (2015-2019) - Top 15 países', 'País', 'Soporte Social')
 
-    # Gráfico barras soporte social promedio
-    graficar_barras(df, 'Social support', 'Promedio Soporte Social (2015-2019) - Top 15 países', 'País', 'Soporte Social')
+    # Scatter plot PIB vs felicidad (usa todos los datos)
+    graficar_scatter(df, 'Economy (GDP per Capita)', 'Happiness Score', 'Relación entre PIB y Felicidad (2015-2019)', 'PIB per cápita', 'Puntaje de Felicidad')
 
-    # Scatter plot PIB vs felicidad (ajusta nombre de columnas si es necesario)
-    graficar_scatter(df, 'GDP per capita', 'Happiness score', 'Relación entre PIB y Felicidad (2015-2019)', 'PIB per cápita', 'Puntaje de felicidad')
-
-    # Histograma puntaje felicidad
-    graficar_histograma(df, 'Happiness score', 'Distribución del Puntaje de Felicidad (2015-2019)', 'Puntaje de felicidad', 'Frecuencia')
-
-    # Heatmap de correlaciones
-    graficar_heatmap(df)
 
