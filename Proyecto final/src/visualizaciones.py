@@ -57,6 +57,54 @@ def estandarizar_columnas(df):
     })
     return df
 
+# --- Cargar y unir datasets ---
+def cargar_y_unir_data(data_folder):
+    archivos = ['2015.csv', '2016.csv', '2017.csv', '2018.csv', '2019.csv']
+    dfs = []
+    for archivo in archivos:
+        ruta = os.path.join(data_folder, archivo)
+        df = pd.read_csv(ruta)
+        df = estandarizar_columnas(df)
+        año = int(archivo.split('.')[0])
+        df['Year'] = año
+        dfs.append(df)
+    df_combinado = pd.concat(dfs, ignore_index=True)
+    return df_combinado
+
+# --- Ejecución principal ---
+if __name__ == "__main__":
+    carpeta_data = 'Proyecto final/data'
+    df = cargar_y_unir_data(carpeta_data)
+    print("Datos cargados y combinados. Columnas:", df.columns)
+
+    # Agrupar por país y obtener promedio solo columnas numéricas
+    df_promedio = df.groupby('Country').mean(numeric_only=True).reset_index()
+
+    # Top 15 países por PIB per cápita
+    df_top15 = df_promedio.sort_values(by='GDP per capita', ascending=False).head(15)
+    graficar_barras(df_top15, 'GDP per capita',
+                    'Promedio PIB per cápita (2015-2019) - Top 15 países',
+                    'País', 'PIB per cápita')
+
+    # Top 15 países por soporte social
+    df_top15_soporte = df_promedio.sort_values(by='Social support', ascending=False).head(15)
+    graficar_barras(df_top15_soporte, 'Social support',
+                    'Promedio Soporte Social (2015-2019) - Top 15 países',
+                    'País', 'Soporte Social')
+
+    # Scatter plot PIB vs felicidad (usa todos los datos)
+    graficar_scatter(df, 'GDP per capita', 'Score',
+                     'Relación entre PIB y Felicidad (2015-2019)',
+                     'PIB per cápita', 'Puntaje de Felicidad')
+
+    # Heatmap de correlaciones
+    graficar_heatmap(df_promedio)
+
+    # Histograma de puntaje de felicidad
+    graficar_histograma(df, 'Score',
+                        'Distribución del Puntaje de Felicidad (2015-2019)',
+                        'Puntaje de Felicidad', 'Frecuencia')
+    
 
 
 
