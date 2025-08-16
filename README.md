@@ -34,7 +34,7 @@ El reporte mundial de felicidad fue elegido porque:
 5.   Ejecuta el scrip principal:
   ```bash
    pip python src/visualizaciones.py
-
+   
 ## Autores
 - Kimberly Solano  
 - Hellen Espinoza
